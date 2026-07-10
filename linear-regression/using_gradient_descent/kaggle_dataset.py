@@ -56,7 +56,7 @@ optimiser = torch.optim.SGD([m,b], lr=learning_rate)
 def r2_eval(y, y_hat):
        with torch.no_grad():
         r2_01 = 1- (torch.sum((y - y_hat)**2) / torch.sum((y-torch.mean(y))**2))
-        r2_1 = r2_score(y.detach().numpy(), y_hat.detach().numpy())
+        r2_1 = r2_score(y, y_hat)
         print(f"r2_1: {r2_1}, r2_01: {r2_01}")
         
         
@@ -74,7 +74,7 @@ def training_gradient_model(x, y, m, b, epochs):
                 if epoch == 0 or epoch == 499 or epoch ==999 :
                         print(f"cost or loss: {C.item()} , epoch: {epoch+1} , wieghts: {m.item()} , bias: {b.item()}")
                         # plotting(x, y, y_hat, epoch, C, m, b)
-        r2_eval(y,regression(x, m, b))
+        return m , b
 
 def plotting(x, y, y_hat, epoch, C, m, b):
         plt.clf()
@@ -87,12 +87,18 @@ def plotting(x, y, y_hat, epoch, C, m, b):
         plt.show()
         
 
+def predict(x_test, m, b):
+        y_pred = m * x_test + b
+        return y_pred.detach().numpy()
+
 if __name__ == "__main__":
         x_train = torch.tensor(x_train,dtype=torch.float)
         y_train = torch.tensor(y_train,dtype=torch.float)
-        training_gradient_model(x_train,y_train , m, b, epochs)
-        weights = {"weights :": m.item(),
-                   "bias:":b.item() }  
-
+        x_test = torch.tensor(x_test,dtype=torch.float)
+        y_test = torch.tensor(y_test,dtype=torch.float)
+        m , b = training_gradient_model(x_train,y_train , m, b, epochs)
+        r2_eval(y_test,predict(x_test,m ,b))
+        
+        
 
 
