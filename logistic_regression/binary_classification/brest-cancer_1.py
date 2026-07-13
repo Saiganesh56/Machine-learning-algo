@@ -83,16 +83,21 @@ def predict(X, w, b):
 if __name__ == "__main__":
         epochs = 1000
         learning_rate = 0.01
-        final_w, final_b = gradient_descent_function(x_train , y_train, learning_rate, epochs) 
+        final_w, final_b = gradient_descent_function(x_train , y_train, learning_rate, epochs)
+         
         # trainig accuracy 
         predictions = predict(x_train, final_w, final_b)
+        
         # evaluation
         training_accuracy = np.mean(predictions == y_train)*100
         print(f" training accuracy {training_accuracy}")
+        
+        
         # testing accuracy
         predictions = predict(x_test, final_w, final_b)
+        
         # evaluation
-        testing_accuracy = np.mean(predictions == y_test)*100
+        testing_accuracy = np.mean(predictions == y_test)*100     
         print(f" testing accuracy {testing_accuracy}")
         
         

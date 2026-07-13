@@ -1,108 +1,77 @@
-from sklearn.metrics import r2_score
+import numpy as np
 import matplotlib.pyplot as plt
-import torch
-
-# BATCH GRADIENT DESCENT
-# y = mx+b
-# Example data 
-x1 = [1, 2, 3, 4, 5]
-y1 = [2, 4, 5, 4, 5]
-
-n = len(x1)
-x = torch.tensor(x1,dtype=torch.float)
-y = torch.tensor(y1,dtype=torch.float)
-
-# assigning random values to m and b 
-#                      where,
-#                               m = slope 
-#                               b = y-intercept 
-
-m = torch.tensor([0.9],requires_grad=True)
-b = torch.tensor([0.1],requires_grad=True)
-
-# there are majorly four step involved in finding the gradient 
-# 1. forward pass 
-# 2. c = y-y_pred ( finding cost or error )
-# 3. finding gradients of c using autodiff 
-# 4. gradient descent
-
-def regression(x,m, b):
-        return x * m + b
-
-def mse(y, y_hat): # this is mse mean squared error 
-        loss = torch.sum((y-y_hat)**2)
-        return loss/n
-
-# hyperparameters 
-learning_rate = 0.01
-epochs = 1000
-
-# 1 forword pass
-y_hat = regression(x, m, b)
-
-# 2 finding cost or loss
-C = mse(y, y_hat)
-
-# 3 finding of gradients 
-C.backward()
-
-# 4 gradient descent  updating parameters
-optimiser = torch.optim.SGD([m,b],lr=learning_rate)
+from sklearn.metrics import mean_absolute_error , mean_squared_error , r2_score   # type: ignore
 
 
-def training_of_model(x, y, y_hat, m, b, epochs):
-        
-        for epoch in range(epochs):
-                
-                optimiser.zero_grad()
-                
-                # step -1 forward-pass
-                y_hat = regression(x, m, b)
-                
-                #step - 2
-                C = mse(y,y_hat)
-                
-                #step - 3 
-                C.backward() 
-                
-                if epoch % 100==0:
-                        plotting_of_gradients(x, y, y_hat, C, epoch)
-                        print(
-                                f"Epoch {epoch:4d} | "
-                                f"Loss={C.item():.4f} | "
-                                f"m={m.item():.4f} | "
-                                f"b={b.item():.4f}" )
-                 
-                # step - 4
-                optimiser.step()
-        r2_eval(y,regression(x, m, b))
-        print("\nTraining Complete")
-        print(f"Final Weight(m) : {m.item():.4f}")
-        print(f"Final Bias(b)  : {b.item():.4f}")
-                
-# r2 = 1 - ss_res / ss_tot
-def r2_eval(y, y_hat):
-        r2_01 = 1- (torch.sum((y - y_hat)**2) / torch.sum((y-torch.mean(y))**2))
-        r2_1 = r2_score(y.detach().numpy(), y_hat.detach().numpy())
-        print(f"r2_1: {r2_1}, r2_01: {r2_01}")
+### THIS IS FOR BETTER UNDERSTANDING WITH CLOSED FORM AS WELL...
 
-# plotting in graph
-def plotting_of_gradients(x, y, y_hat, C, epoch):
-        plt.clf()
-        plt.title(f"'gradient descent', 'Cost: '{C}, 'epoch: '{epoch}")
-        
-        plt.xlabel("x")
-        plt.ylabel("y")
-        
-        plt.scatter(x.numpy(),y.numpy(),c="blue")
-        plt.plot(x,y_hat.detach().numpy(), color="red")
-        plt.show()
-        
-        
-          
-        
-if __name__ == "__main__":
-        training_of_model(x, y, y_hat, m, b, epochs)
+x_actual = np.array([1, 2, 3, 4, 5]) 
+y_actual = np.array([2, 4, 5, 4, 5])
+
+# # we need to find m  and c
+# #          m = (x-mean_x)(y-mean_y)/(x-mean_x)**2
+# #          c = mean_y - m * mean_x
+
+# finding required solu for m and c
+x_mean = np.mean(x_actual)
+y_mean = np.mean(y_actual)
+
+numer = 0
+denom = 0
+
+n = len(x_actual)
+
+for i in range(n):
+        numer += (x_actual[i]-x_mean)*(y_actual[i]-y_mean)
+        denom += (np.square(x_actual[i]-x_mean))
+
+# here m is slope and c is y-interceptor
+m = numer / denom
+c = y_mean - (m * x_mean) 
 
 
-        
+x_min = min(x_actual) 
+x_max = max(x_actual) 
+
+x = np.linspace(x_min , x_max ) # feature
+y_pred = (m *x) + c # predicted value
+
+# ploting of values with m and c 
+plt.plot(x, y_pred)
+plt.title(" This is linear regression with closed form..")
+plt.xlabel(" thsi is b values ")
+plt.ylabel("this is a values ")
+plt.scatter(x_actual ,y_actual)
+plt.grid(alpha = 0.50)
+plt.show()
+
+# this is exactly how closed form works even in sklearn 
+# Also same for the even n number of features 
+
+y_pred1 = (m*x_actual) + c
+
+# R2 tells you how well is your line fits ...
+
+#       r2 = ss_reg / ss_tot  or = 1 - (ss_res)/(ss_tot)
+
+#                         where, 
+#                               ss_reg =  sum((y_pred - y_mean)**2)
+#                               ss_tot = sum(( y - y_mean)**2)
+#                               ss_res = sum((y - y_pred )**2)
+#                               ss_tot = ss_reg + ss_res
+
+
+
+ss_reg =  np.sum((y_pred1 - y_mean)**2)
+ss_tot = np.sum(( y_actual - y_mean)**2)
+ss_res = np.sum((y_actual - y_pred1 )**2)
+
+
+#  both are same 
+r2_score1 = ss_reg / ss_tot
+r2_score2 = 1 - (ss_res/ss_tot)
+
+# with sklearn method just to conform
+r2_score3 = r2_score(y_actual , y_pred1)
+Mean_Squared_Error = mean_squared_error(y_actual , y_pred1)
+Mean_Absolute_Error = mean_absolute_error(y_actual , y_pred1)
