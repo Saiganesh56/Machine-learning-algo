@@ -30,8 +30,8 @@ m = numer / denom
 c = y_mean - (m * x_mean) 
 
 
-x_min = min(x_actual) 
-x_max = max(x_actual) 
+x_min = min(x_actual) - 1
+x_max = max(x_actual) + 1
 
 x = np.linspace(x_min , x_max ) # feature
 y_pred = (m *x) + c # predicted value

@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import kagglehub 
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report 
 import os 
 
 # Download latest version
@@ -90,7 +91,7 @@ if __name__ == "__main__":
         
         # evaluation
         training_accuracy = np.mean(predictions == y_train)*100
-        print(f" training accuracy {training_accuracy}")
+        print(f" \n training accuracy : {training_accuracy}")
         
         
         # testing accuracy
@@ -98,8 +99,9 @@ if __name__ == "__main__":
         
         # evaluation
         testing_accuracy = np.mean(predictions == y_test)*100     
-        print(f" testing accuracy {testing_accuracy}")
+        print(f" testing accuracy : {testing_accuracy}")
         
+        print("classification report : \n ",classification_report(predictions, y_test))
         
         
         

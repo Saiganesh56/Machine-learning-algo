@@ -54,10 +54,10 @@ optimiser = torch.optim.SGD([m,b], lr=learning_rate)
 
 # r2 = 1 - ss_res / ss_tot
 def r2_eval(y, y_hat):
-       with torch.no_grad():
-        r2_01 = 1- (torch.sum((y - y_hat)**2) / torch.sum((y-torch.mean(y))**2))
+       with torch.no_grad(): # for this dont track gradients for the block of code 
+        # r2_01 = 1- (torch.sum((y - y_hat)**2) / torch.sum((y-torch.mean(y))**2))
         r2_1 = r2_score(y, y_hat)
-        print(f"r2_1: {r2_1}, r2_01: {r2_01}")
+        print(f"r2_score: {r2_1}")#r2_01: {r2_01}")
         
         
 def training_gradient_model(x, y, m, b, epochs):
