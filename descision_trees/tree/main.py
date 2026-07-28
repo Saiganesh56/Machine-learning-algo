@@ -30,7 +30,7 @@ y = df["play_tennis"]
              
 x_train, x_test, y_train, y_test  = train_test_split(X, y ,test_size=0.20, random_state=42)
 
-dt = DecisionTreeClassifier(criterion="gini")
+dt = DecisionTreeClassifier(criterion="entropy")
 
 dt.fit(x_train, y_train)
 
