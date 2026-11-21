@@ -6,7 +6,6 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier , plot_tree
 from sklearn.metrics import accuracy_score , classification_report , f1_score, confusion_matrix
-import matplotlib.pyplot as plt
 
 
 df = pd.read_csv("C:/Users/Admin/Desktop/Play Tennis.csv")

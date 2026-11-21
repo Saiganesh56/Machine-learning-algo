@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import statistics
 from sklearn.model_selection import train_test_split
+from  sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix , classification_report 
 
 df = pd.read_csv("C:/Users/Admin/Desktop/(Copy) diabetes.csv")
@@ -14,6 +15,13 @@ Y = df["Outcome"].values
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size= 0.20, random_state= 42, stratify= Y) # type: ignore
 
 print(x_train.shape , x_test.shape, y_train.shape, y_test.shape) 
+
+# knn = KNeighborsClassifier(n_neighbors=5, metric="euclidean")
+
+# pred = knn.fit(x_train,x_test)
+
+# print(pred)
+
 
 class KNearest_Nieghbor():
         def __init__(self) :
