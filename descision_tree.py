@@ -8,16 +8,15 @@ from sklearn.tree import DecisionTreeClassifier , plot_tree
 from sklearn.metrics import accuracy_score , classification_report , f1_score, confusion_matrix
 
 
-df = pd.read_csv("C:/Users/Admin/Desktop/Play Tennis.csv")
+df = pd.read_csv("C:/Users/Admin/Desktop/snippets/Play Tennis.csv")
 
 df.shape
 df.columns = df.columns.str.replace(" ","_").str.lower().str.strip()
-col = df.columns
 
 columns = df.columns
 
 for i in columns :
-        if df[i].dtype == "str" :
+        if df[i].dtype == "O":
                 le = LabelEncoder()
                 df[i] = le.fit_transform(df[i]) # type: ignore
 
